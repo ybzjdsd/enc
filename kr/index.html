@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=10">
+		<title>韩国人说</title>
+	</head>
+	<body>
+	  <style>
+	    html{
+	      margin:0;
+	      padding:0;
+	    }
+	    body{
+	      margin:0;
+	      padding:1rem;
+	    }
+	    button{
+	      width:64px;
+	      height:32px;
+	    }
+	    #div{
+	      padding:0.5rem;
+	      min-height: 2rem;
+	      margin:0.5rem 0;
+	      outline: 1px solid #ccc;
+	    }
+	  </style>
+	  <h1>韩国人说</h1>
+	  <button id="btn1">加密</button>
+	  <button id="btn2">解密</button>
+	  <button id="btn3">复制</button>
+	  <div id="div" contenteditable="true"></div>
+		<script type="text/javascript">
+			function encode(str){
+				let spl=13
+				//split length 介于1与16
+				let tpl=0
+				//temp length
+				let temp=0
+				let rlt=[]
+				//result array
+				for(let i=0;i<str.length;i++){
+					temp=(temp<<16)+str.charCodeAt(i)
+					tpl+=16
+					while(tpl>=spl){
+						rlt.push(temp>>>(tpl-spl))
+						tpl+=-spl
+						temp=tpl==0?0:(temp<<(32-tpl))>>>(32-tpl)
+						//判断tpl是否为0 因为js中移位次数对32取模
+					}
+				}
+				if(tpl>0){
+					temp=temp<<16
+					tpl+=16
+					rlt.push(temp>>>(tpl-spl))
+				}
+				return rlt
+			}
+			function decode(arr){
+				let spl=13
+				let tpl=0
+				let temp=0
+				let rlt=""
+				for(let i=0;i<arr.length;i++){
+					temp=(temp<<spl)+arr[i]
+					tpl+=spl
+					while(tpl>=16){
+						rlt=rlt+String.fromCharCode(temp>>>(tpl-16))
+						tpl+=-16
+						temp=tpl==0?0:(temp<<(32-tpl))>>>(32-tpl)
+					}
+				}
+				return rlt
+			}
+			function encodein(str){
+				return encode(str).map(x=>String.fromCharCode(x+44032)).join("")
+			}
+			function decodeout(str){
+			  return decode(str.split("").map(x=>x.charCodeAt(0)-44032).filter(x=> x<8192))
+			}
+			let div=document.getElementById("div")
+			document.getElementById("btn1").onclick=()=>{
+			  div.innerText=encodein(div.innerText)
+			}
+			document.getElementById("btn2").onclick=()=>{
+			  div.innerText=decodeout(div.innerText)
+			}
+			document.getElementById("btn3").onclick=()=>{
+        let t=div.innerText;
+        let i=document.createElement("input");
+        document.body.appendChild(i);
+        i.value=t;
+        i.readonly="true";
+        i.focus();
+        i.setSelectionRange(0,t.length);
+        document.execCommand("copy");
+        document.body.removeChild(i);
+      }
+		</script>
+	</body>
+</html>
