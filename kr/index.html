@@ -76,7 +76,7 @@
 				return encode(str).map(x=>String.fromCharCode(x+44032)).join("")
 			}
 			function decodeout(str){
-			  return decode(str.split("").map(x=>x.charCodeAt(0)-44032).filter(x=> x<8192))
+			  return decode(str.split("").map(x=>x.charCodeAt(0)-44032).filter(x=> x>=0 && x<8192))
 			}
 			let div=document.getElementById("div")
 			document.getElementById("btn1").onclick=()=>{
