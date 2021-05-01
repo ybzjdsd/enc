@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+<title>文字转dataurl</title>
+</head>
+<body>
+<h1>文字转dataurl</h1>
+<div contenteditable="true" id="i" style="outline:1px solid #ccc;min-height:48px"></div>
+<p><button id="1">转换</button>&ensp;<button id="2">复制</button>&ensp;粘贴到浏览器即可打开</p>
+<div id="o" style="word-break:break-all">
+</div>
+<script>
+let g=(a)=>document.getElementById(a);
+g("1").onclick=()=>{
+let t=g("i").innerText;
+let b=new Blob([t],{type:"text/plain;charset=UTF-8"});
+let fr=new FileReader();
+fr.onload=(e)=>{
+g("o").innerText=e.target.result
+}
+fr.readAsDataURL(b);
+}
+g("2").onclick=()=>{
+let t=g("o").innerText;
+let i=document.createElement("input");
+document.body.appendChild(i);
+i.value=t;
+i.readonly="true";
+i.focus();
+i.setSelectionRange(0,t.length);
+document.execCommand("copy");
+document.body.removeChild(i);
+}
+</script>
+</body>
+</html>
